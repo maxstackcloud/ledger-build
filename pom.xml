@@ -25,7 +25,7 @@
         <sonar.dependencyCheck.jsonReportPath>target/dependency-check-report.json</sonar.dependencyCheck.jsonReportPath>
         <sonar.dependencyCheck.htmlReportPath>target/dependency-check-report.html</sonar.dependencyCheck.htmlReportPath>
 
-
+        <sonar.organization>wezva-fintech</sonar.organization>
     </properties>
 
     <dependencies>
@@ -131,25 +131,6 @@
             </plugin>
 
             <plugin>
-		       <groupId>org.jacoco</groupId>
-		       <artifactId>jacoco-maven-plugin</artifactId>
-		       <version>0.8.2</version>
-		          <executions>
-			          <execution>
-				         <goals>
-					        <goal>prepare-agent</goal>
-				         </goals>
-			          </execution>
-			          <execution>
-				        <id>report</id>
-				         <goals>
-					        <goal>report</goal>
-				         </goals>
-			          </execution>
-		          </executions>
-	        </plugin>
-
-            <plugin>
               <groupId>org.owasp</groupId>
               <artifactId>dependency-check-maven</artifactId>
               <version>7.1.1</version>
@@ -167,6 +148,32 @@
                  </formats>
              </configuration>
              </plugin>
+
+            <plugin>
+              <groupId>org.sonarsource.scanner.maven</groupId>
+              <artifactId>sonar-maven-plugin</artifactId>
+              <version>4.0.0.4121</version>
+            </plugin>
+
+            <plugin>
+              <groupId>org.jacoco</groupId>
+              <artifactId>jacoco-maven-plugin</artifactId>
+              <version>0.8.8</version>
+              <executions>
+                  <execution>
+                      <id>prepare-agent</id>
+                      <goals>
+                          <goal>prepare-agent</goal>
+                      </goals>
+                  </execution>
+                  <execution>
+                      <id>report</id>
+                      <goals>
+                          <goal>report</goal>
+                      </goals>
+                  </execution>
+              </executions>
+            </plugin>
 
         </plugins>
     </build>
