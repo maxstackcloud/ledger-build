@@ -89,7 +89,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.scm }}
         run: |
           mvn sonar:sonar \
-            -Dsonar.projectKey=wezva-fintech_springboot-build-backend-github \
+            -Dsonar.projectKey=wezva-fintech_ledger-build \
             -Dsonar.organization=wezva-fintech \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.token=$SONAR_TOKEN \
