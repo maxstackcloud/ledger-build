@@ -9,6 +9,28 @@ on:
     branches:
       - dev
       - main
+  
+  workflow_dispatch:
+   inputs:
+     ECRURL:
+      description: "ECR Registry URL"
+      required: true
+      default: "081654307023.dkr.ecr.ap-south-1.amazonaws.com"
+
+     APPREPO:
+      description: "Docker Repo Name"
+      required: true
+      default: "wezvatechbackend"
+
+     REGION:
+      description: "AWS Region"
+      required: true
+      default: "ap-south-1"
+
+     deploybuild:
+      description: "Trigger Deployment"
+      required: false
+      default: "false"    
 
 jobs:
   build-and-scan:
@@ -96,3 +118,5 @@ jobs:
             -Dsonar.branch.name=${{ github.ref_name }} \
             -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
             -Dsonar.qualitygate.wait=true #For quality gate
+
+            
