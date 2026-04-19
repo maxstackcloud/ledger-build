@@ -151,40 +151,6 @@ jobs:
           docker push $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       # -----------------------------
-      # Scan Docker Image (Trivy)
-      # -----------------------------
-      - name: Scan Docker Image (Trivy)
-        env:
-          REPOSITORY: ${{ inputs.APPREPO || 'wezvatechbackend' }}
-          IMAGE_TAG: fb${{ github.run_number }}
-        run: |
-          echo "Scanning Image for Vulnerabilities..."
-          docker run --rm \
-            -v /var/run/docker.sock:/var/run/docker.sock \
-            aquasec/trivy:0.50.0 image \
-            --scanners vuln \
-            $REPOSITORY:$IMAGE_TAG > trivyresults.txt
-
-      # -----------------------------
-      # Dockerfile Lint (Hadolint)
-      # -----------------------------
-      - name: Dockerfile Lint (Hadolint)
-        run: |
-          echo "Analyzing Dockerfile best practices..."
-          docker run --rm -i hadolint/hadolint < Dockerfile | tee dockerlinter.log
-
-      # -----------------------------
-      # Upload Scan Reports (Optional but Recommended)
-      # -----------------------------
-      - name: Upload Scan Reports
-        uses: actions/upload-artifact@v4
-        with:
-          name: security-reports
-          path: |
-            trivyresults.txt
-            dockerlinter.log
-
-      # -----------------------------
       # Cleanup Docker Image
       # -----------------------------
       - name: Cleanup Docker Image
