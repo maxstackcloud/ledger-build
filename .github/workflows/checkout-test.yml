@@ -203,13 +203,13 @@ jobs:
         run: |
           CRITICAL=$(aws ecr describe-image-scan-findings \
             --repository-name ${{ inputs.APPREPO || 'wezvatechbackend' }} \
-            --image-id imageTag=$IMAGE_TAG \
+            --image-id imageTag=fb${{ github.run_number }} \
             --query 'imageScanFindings.findingSeverityCounts.CRITICAL' \
             --output text 2>/dev/null || echo 0)
 
           HIGH=$(aws ecr describe-image-scan-findings \
             --repository-name ${{ inputs.APPREPO || 'wezvatechbackend' }} \
-            --image-id imageTag=$IMAGE_TAG \
+            --image-id imageTag=fb${{ github.run_number }} \
             --query 'imageScanFindings.findingSeverityCounts.HIGH' \
             --output text 2>/dev/null || echo 0)
 
@@ -219,14 +219,3 @@ jobs:
           echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
           echo "high=$HIGH" >> $GITHUB_OUTPUT          
 
-      # -----------------------------
-      # Cleanup Docker Image
-      # -----------------------------
-      - name: Cleanup Docker Image
-        if: always()
-        env:
-          REPOSITORY: ${{ inputs.APPREPO || 'wezvatechbackend' }}
-          IMAGE_TAG: fb${{ github.run_number }}
-        run: |
-          docker rmi $REPOSITORY:$IMAGE_TAG || true
-            
