@@ -150,6 +150,66 @@ jobs:
           echo "Pushing Docker Image..."
           docker push $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG
 
+      # -------------
+      # Image Digest
+      # -------------
+      - name: Get Image Digest
+        id: image
+        env:
+          REPOSITORY: ${{ inputs.APPREPO || 'wezvatechbackend' }}
+          IMAGE_TAG: fb${{ github.run_number }}
+        run: |
+          DIGEST=$(aws ecr describe-images \
+          --repository-name $REPOSITORY \
+          --query "imageDetails[?imageTags[?@=='$IMAGE_TAG']].imageDigest" \
+          --output text)
+          echo "digest=$DIGEST" >> $GITHUB_OUTPUT   
+
+      # ------------------------
+      # Wait till scan complete
+      # ------------------------
+      - name: Wait for Scan Completion
+        run: |
+          for i in {1..12}; do
+            STATUS=$(aws ecr describe-image-scan-findings \
+              --repository-name ${{ inputs.APPREPO }} \
+              --image-id imageDigest=${{ steps.image.outputs.digest }} \
+              --query 'imageScanStatus.status' \
+              --output text)
+
+            echo "Scan Status: $STATUS"
+
+            if [ "$STATUS" = "COMPLETE" ]; then
+              break
+            fi
+
+            sleep 10
+          done
+
+      # ------------------------
+      # Get vulnerability details
+      # ------------------------
+      - name: Get Vulnerability Counts
+        id: scan
+        run: |
+          CRITICAL=$(aws ecr describe-image-scan-findings \
+            --repository-name ${{ inputs.APPREPO }} \
+            --image-id imageDigest=${{ steps.image.outputs.digest }} \
+            --query 'imageScanFindings.findingSeverityCounts.CRITICAL' \
+            --output text)
+
+          HIGH=$(aws ecr describe-image-scan-findings \
+            --repository-name ${{ inputs.APPREPO }} \
+            --image-id imageDigest=${{ steps.image.outputs.digest }} \
+            --query 'imageScanFindings.findingSeverityCounts.HIGH' \
+            --output text)
+
+          echo "Critical: $CRITICAL"
+          echo "High: $HIGH"
+
+          echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+          echo "high=$HIGH" >> $GITHUB_OUTPUT          
+
       # -----------------------------
       # Cleanup Docker Image
       # -----------------------------
