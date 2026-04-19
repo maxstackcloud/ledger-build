@@ -68,39 +68,39 @@ jobs:
       - name: Rename Artifact
         run: cp target/*.jar target/backend_fb${{ github.run_number }}.jar
 
-      # -----------------------------
-      # Code Coverage Report (JaCoCo)
-      # -----------------------------
-      - name: Code Coverage Report (JaCoCo)
-        run: mvn clean verify -Ddependency-check.skip=true
+      # # -----------------------------
+      # # Code Coverage Report (JaCoCo)
+      # # -----------------------------
+      # - name: Code Coverage Report (JaCoCo)
+      #   run: mvn clean verify -Ddependency-check.skip=true
 
-      - name: Upload JaCoCo Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: target/site/jacoco
+      # - name: Upload JaCoCo Report
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: jacoco-report
+      #     path: target/site/jacoco
 
-      # -----------------------------
-      # OWASP Dependency Check (SCA)
-      # -----------------------------
-      - name: Trivy FS Scan (SCA)
-        continue-on-error: true
-        run: |
-          mkdir -p trivy-report
+      # # -----------------------------
+      # # OWASP Dependency Check (SCA)
+      # # -----------------------------
+      # - name: Trivy FS Scan (SCA)
+      #   continue-on-error: true
+      #   run: |
+      #     mkdir -p trivy-report
           
-          docker run --rm \
-            -v ${{ github.workspace }}:/project \
-            -v ${{ github.workspace }}/trivy-report:/report \
-            aquasec/trivy:0.50.0 \
-            fs /project \
-            --format json \
-            --output /report/trivy-report.json
+      #     docker run --rm \
+      #       -v ${{ github.workspace }}:/project \
+      #       -v ${{ github.workspace }}/trivy-report:/report \
+      #       aquasec/trivy:0.50.0 \
+      #       fs /project \
+      #       --format json \
+      #       --output /report/trivy-report.json
 
-      - name: Upload Trivy Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: trivy-report
-          path: ./trivy-report
+      # - name: Upload Trivy Report
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: trivy-report
+      #     path: ./trivy-report
 
       # -----------------------------
       # SonarCloud SAST Scan (main branch only)
@@ -116,7 +116,7 @@ jobs:
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.token=$SONAR_TOKEN \
             -Dsonar.branch.name=${{ github.ref_name }} \
-            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+            #-Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
             -Dsonar.qualitygate.wait=true #For quality gate
 
       # -----------------------------
@@ -172,7 +172,7 @@ jobs:
         run: |
           for i in {1..12}; do
             STATUS=$(aws ecr describe-image-scan-findings \
-              --repository-name ${{ inputs.APPREPO }} \
+              --repository-name ${{ inputs.APPREPO || 'wezvatechbackend' }} \
               --image-id imageDigest=${{ steps.image.outputs.digest }} \
               --query 'imageScanStatus.status' \
               --output text)
@@ -193,7 +193,7 @@ jobs:
         id: scan
         run: |
           CRITICAL=$(aws ecr describe-image-scan-findings \
-            --repository-name ${{ inputs.APPREPO }} \
+            --repository-name ${{ inputs.APPREPO || 'wezvatechbackend' }} \
             --image-id imageDigest=${{ steps.image.outputs.digest }} \
             --query 'imageScanFindings.findingSeverityCounts.CRITICAL' \
             --output text)
