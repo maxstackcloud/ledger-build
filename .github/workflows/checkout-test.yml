@@ -150,20 +150,20 @@ jobs:
           echo "Pushing Docker Image..."
           docker push $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG
 
-      # -------------
-      # Image Digest
-      # -------------
-      - name: Get Image Digest
-        id: image
-        env:
-          REPOSITORY: ${{ inputs.APPREPO || 'wezvatechbackend' }}
-          IMAGE_TAG: fb${{ github.run_number }}
-        run: |
-          DIGEST=$(aws ecr describe-images \
-          --repository-name $REPOSITORY \
-          --query "imageDetails[?imageTags[?@=='$IMAGE_TAG']].imageDigest" \
-          --output text)
-          echo "digest=$DIGEST" >> $GITHUB_OUTPUT   
+      # # -------------
+      # # Image Digest
+      # # -------------
+      # - name: Get Image Digest
+      #   id: image
+      #   env:
+      #     REPOSITORY: ${{ inputs.APPREPO || 'wezvatechbackend' }}
+      #     IMAGE_TAG: fb${{ github.run_number }}
+      #   run: |
+      #     DIGEST=$(aws ecr describe-images \
+      #     --repository-name $REPOSITORY \
+      #     --query "imageDetails[?imageTags[?@=='$IMAGE_TAG']].imageDigest" \
+      #     --output text)
+      #     echo "digest=$DIGEST" >> $GITHUB_OUTPUT   
 
       # ------------------------
       # Wait till scan complete
@@ -173,9 +173,9 @@ jobs:
           for i in {1..12}; do
             STATUS=$(aws ecr describe-image-scan-findings \
               --repository-name ${{ inputs.APPREPO || 'wezvatechbackend' }} \
-              --image-id imageDigest=${{ steps.image.outputs.digest }} \
+              --image-id imageTag=fb${{ github.run_number }} \
               --query 'imageScanStatus.status' \
-              --output text)
+              --output text 2>/dev/null || echo "NOT_FOUND")
 
             echo "Scan Status: $STATUS"
 
