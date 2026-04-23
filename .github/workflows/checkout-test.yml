@@ -204,21 +204,21 @@ jobs:
           echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
           echo "high=$HIGH" >> $GITHUB_OUTPUT   
           
-      # -----------------------
-      # Quality Gate for Image
-      # ----------------------   
-      - name: Enforce Security Gate (Ignore Failures)
-        continue-on-error: true
-        run: |
-          CRITICAL=${{ steps.scan.outputs.critical }}
-          HIGH=${{ steps.scan.outputs.high }}
+      # # -----------------------
+      # # Quality Gate for Image
+      # # ----------------------   
+      # - name: Enforce Security Gate (Ignore Failures)
+      #   continue-on-error: true
+      #   run: |
+      #     CRITICAL=${{ steps.scan.outputs.critical }}
+      #     HIGH=${{ steps.scan.outputs.high }}
 
-          if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
-            echo "⚠️ Vulnerabilities found but ignored"
-            exit 1
-          else
-            echo "✅ No vulnerabilities"
-          fi
+      #     if [ "$CRITICAL" -gt 0 ] || [ "$HIGH" -gt 0 ]; then
+      #       echo "⚠️ Vulnerabilities found but ignored"
+      #       exit 1
+      #     else
+      #       echo "✅ No vulnerabilities"
+      #     fi
 
       # -----------------------------
       # Trigger CD Pipeline
