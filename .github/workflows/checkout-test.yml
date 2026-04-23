@@ -25,12 +25,7 @@ on:
      REGION:
       description: "AWS Region"
       required: true
-      default: "ap-south-1"
-
-     deploybuild:
-      description: "Trigger Deployment"
-      required: true
-      default: "true"    
+      default: "ap-south-1"  
 
 jobs:
   build-and-scan:
