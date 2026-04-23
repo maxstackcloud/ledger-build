@@ -29,8 +29,8 @@ on:
 
      deploybuild:
       description: "Trigger Deployment"
-      required: false
-      default: "false"    
+      required: true
+      default: "true"    
 
 jobs:
   build-and-scan:
@@ -220,3 +220,24 @@ jobs:
             echo "✅ No vulnerabilities"
           fi
 
+      # -----------------------------
+      # Trigger CD Pipeline
+      # -----------------------------
+      - name: Trigger CD Pipeline
+        if: ${{ inputs.deploybuild == 'true' }}
+        run: |
+          IMAGE_TAG="fb${{ github.run_number }}"
+
+          curl -X POST \
+          -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
+          -H "Accept: application/vnd.github+json" \
+          https://api.github.com/repos/wezva-fintech/ledger-deployment/actions/workflows/deploy.yml/dispatches \
+          -d "{
+            \"ref\":\"main\",
+            \"inputs\": {
+              \"ECRURL\": \"${{ inputs.ECRURL }}/\",
+              \"REPO\": \"${{ inputs.APPREPO }}\",
+              \"IMAGE\": \"$IMAGE_TAG\",
+              \"TEST\": \"functional\"
+            }
+          }"
