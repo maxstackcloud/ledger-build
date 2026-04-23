@@ -224,7 +224,7 @@ jobs:
       # Trigger CD Pipeline
       # -----------------------------
       - name: Trigger CD Pipeline
-        if: ${{ inputs.deploybuild == 'true' }}
+        if: ${{ success() && github.ref == 'refs/heads/main' }}
         run: |
           IMAGE_TAG="fb${{ github.run_number }}"
 
