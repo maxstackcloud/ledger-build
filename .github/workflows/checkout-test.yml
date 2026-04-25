@@ -215,11 +215,16 @@ jobs:
             echo "✅ No vulnerabilities"
           fi
 
-      # -----------------------------
-      # Trigger CD Pipeline
-      # -----------------------------
+  # -----------------------------
+  # Trigger CD Job
+  # -----------------------------
+  trigger-cd-pipeline:
+    runs_on: ubuntu-latest
+    needs: build-and-scan
+    if: ${{ success() && github.ref == 'refs/heads/main' }}
+
+    steps:
       - name: Trigger CD Pipeline
-        if: ${{ success() && github.ref == 'refs/heads/main' }}
         run: |
           IMAGE_TAG="fb${{ github.run_number }}"
 
