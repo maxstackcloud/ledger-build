@@ -219,7 +219,7 @@ jobs:
   # Trigger CD Job
   # -----------------------------
   trigger-cd-pipeline:
-    runs_on: ubuntu-latest
+    runs-on: ubuntu-latest
     needs: build-and-scan
     if: ${{ success() && github.ref == 'refs/heads/main' }}
 
