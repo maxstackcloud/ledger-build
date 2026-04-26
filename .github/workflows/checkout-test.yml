@@ -76,7 +76,7 @@ jobs:
           path: target/site/jacoco
 
       # -----------------------------
-      # OWASP Dependency Check (SCA)
+      # Trivy Dependency Check (SCA)
       # -----------------------------
       - name: Trivy FS Scan (SCA)
         continue-on-error: true
@@ -97,9 +97,9 @@ jobs:
           name: trivy-report
           path: ./trivy-report
 
-      # -----------------------------
-      # SonarCloud SAST Scan (main branch only)
-      # -----------------------------
+      # ---------------------
+      # SonarCloud SAST Scan
+      # ---------------------
       - name: SonarCloud SAST Scan
         if: github.ref == 'refs/heads/main'
         env:
@@ -203,7 +203,7 @@ jobs:
       # Quality Gate for Image
       # ----------------------   
       - name: Enforce Security Gate (Ignore Failures)
-        continue-on-error: true
+        continue-on-error: true # ----------> Because here we have high & critical Vulnerability
         run: |
           CRITICAL=${{ steps.scan.outputs.critical }}
           HIGH=${{ steps.scan.outputs.high }}
