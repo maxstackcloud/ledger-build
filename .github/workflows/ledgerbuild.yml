@@ -59,7 +59,7 @@ jobs:
         run: mvn clean package -Dmaven.test.skip=true
 
       - name: Rename Artifact
-        run: cp target/*.jar target/backend_fb${{ github.run_number }}.jar
+        run: cp target/*.jar target/backend_rel${{ github.run_number }}.jar
 
       # -----------------------------
       # Code Coverage Report (JaCoCo)
