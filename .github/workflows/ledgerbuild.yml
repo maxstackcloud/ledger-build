@@ -13,7 +13,7 @@ on:
      ECRURL:
       description: "ECR Registry URL"
       required: true
-      default: "726014480111.dkr.ecr.ap-south-1.amazonaws.com/maxstack.cloud"
+      default: "726014480111.dkr.ecr.ap-south-1.amazonaws.com"
 
      APPREPO:
       description: "Docker Repo Name"
@@ -134,14 +134,14 @@ jobs:
       # ----------------------------- 
       - name: Build and Push Docker Image
         env:
-          ECR_REGISTRY: ${{ inputs.ECRURL || '726014480111.dkr.ecr.ap-south-1.amazonaws.com/maxstack.cloud' }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{ inputs.APPREPO || 'maxstack.cloud' }}
           IMAGE_TAG: rel${{ github.run_number }}
         run: |
-          echo "Building Docker Image..."
-          docker build -t $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG .
-          echo "Pushing Docker Image..."
-          docker push $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG  
+          IMAGE_URI="$ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG"
+          echo "Pushing image to $IMAGE_URI"
+          docker build -t "$IMAGE_URI" .
+          docker push "$IMAGE_URI" 
 
       # ------------------------
       # Wait till scan complete
@@ -233,7 +233,7 @@ jobs:
           -d "{
             \"ref\":\"main\",
             \"inputs\": {
-              \"ECRURL\": \"${{ inputs.ECRURL || '471112567703.dkr.ecr.us-east-1.amazonaws.com/maxstack.cloud' }}/\",
+              \"ECRURL\": \"${{ inputs.ECRURL || '471112567703.dkr.ecr.us-east-1.amazonaws.com' }}/\",
               \"REPO\": \"${{ inputs.APPREPO || 'maxstack.cloud' }}\",
               \"IMAGE\": \"$IMAGE_TAG\",
               \"TEST\": \"regression\"
