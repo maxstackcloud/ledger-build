@@ -226,15 +226,15 @@ jobs:
         run: |
           IMAGE_TAG="rel${{ github.run_number }}"
 
-          curl -X POST \
+          curl -fail-with-body -X POST \
           -H "Authorization: Bearer ${{ secrets.GH_PAT }}" \
           -H "Accept: application/vnd.github+json" \
           https://api.github.com/repos/wezva-fintech/ledger-deployment/actions/workflows/deploy.yml/dispatches \
           -d "{
             \"ref\":\"main\",
             \"inputs\": {
-              \"ECRURL\": \"${{ inputs.ECRURL }}/\",
-              \"REPO\": \"${{ inputs.APPREPO }}\",
+              \"ECRURL\": \"${{ inputs.ECRURL || '471112567703.dkr.ecr.us-east-1.amazonaws.com/maxstack.cloud' }}/\",
+              \"REPO\": \"${{ inputs.APPREPO || 'maxstack.cloud' }}\",
               \"IMAGE\": \"$IMAGE_TAG\",
               \"TEST\": \"regression\"
             }
