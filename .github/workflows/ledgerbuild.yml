@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
    inputs:
      ECRURL:
-      description: "ECR Registry URL"
+      description: "ECR Registry URL with maxstack original account"
       required: true
       default: "726014480111.dkr.ecr.ap-south-1.amazonaws.com"
 
