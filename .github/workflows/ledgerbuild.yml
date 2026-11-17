@@ -13,17 +13,17 @@ on:
      ECRURL:
       description: "ECR Registry URL"
       required: true
-      default: "081654307023.dkr.ecr.ap-south-1.amazonaws.com"
+      default: "471112567703.dkr.ecr.us-east-1.amazonaws.com/maxstack.cloud"
 
      APPREPO:
       description: "Docker Repo Name"
       required: true
-      default: "wezvatechledger"
+      default: "maxstack.cloud"
 
      REGION:
       description: "AWS Region"
       required: true
-      default: "ap-south-1"  
+      default: "us-east-1"  
 
 jobs:
   build-and-scan:
