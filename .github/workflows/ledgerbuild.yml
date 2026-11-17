@@ -55,17 +55,16 @@ jobs:
       # -----------------------------
       # Build Spring Boot Jar
       # -----------------------------
-      - name: Build Spring Boot Jar
-        run: mvn clean package -Dmaven.test.skip=true
+      - name: Build, test, and generate JaCoCo coverage
+        run: |
+          git rev-parse HEAD
+          mvn -version
+          docker version
+          mvn -B dependency:tree '-Dincludes=org.testcontainers:*,com.github.docker-java:*'
+          mvn -B -e clean verify -Ddependency-check.skip=true
 
       - name: Rename Artifact
-        run: cp target/*.jar target/backend_rel${{ github.run_number }}.jar
-
-      # -----------------------------
-      # Code Coverage Report (JaCoCo)
-      # -----------------------------
-      - name: Code Coverage Report (JaCoCo)
-        run: mvn clean verify -Ddependency-check.skip=true
+        run: cp target/*.jar "target/backend_rel${{ github.run_number }}.jar"
 
       - name: Upload JaCoCo Report
         uses: actions/upload-artifact@v4
