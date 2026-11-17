@@ -61,7 +61,7 @@ jobs:
           mvn -version
           docker version
           mvn -B dependency:tree '-Dincludes=org.testcontainers:*,com.github.docker-java:*'
-          mvn -B -e clean verify -Ddependency-check.skip=true
+          mvn -B -e -Dapi.version=1.44 clean verify -Ddependency-check.skip=true
 
       - name: Rename Artifact
         run: cp target/*.jar "target/backend_rel${{ github.run_number }}.jar"
