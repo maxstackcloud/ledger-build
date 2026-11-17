@@ -42,6 +42,11 @@ $ curl -s http://localhost:8080/actuator/health/readiness
 ```
 
 
-=======
-# ledger-build
-wezva
+
+## GitHub Actions build pipeline
+
+See [the detailed pipeline guide](docs/github-build-pipeline.md) for the code review,
+GitHub variables and secrets, AWS OIDC/IAM setup, every workflow stage and command,
+and security gate behavior. Maven now produces `target/app.jar` (replace the old
+version-specific JAR path in the example above). The container starts Java directly;
+provide deployment-specific Spring configuration through environment variables or mounts.

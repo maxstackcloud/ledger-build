@@ -1,9 +1,7 @@
-FROM eclipse-temurin:17.0.6_10-jre-alpine
-RUN addgroup --system wezvatech  && adduser -S -s /usr/sbin/nologin -G wezvatech wezvatech && mkdir -p /opt/wezva
+FROM eclipse-temurin:17-jre-jammy
+RUN groupadd --system wezvatech && useradd --system --gid wezvatech --home-dir /opt/wezva wezvatech
 WORKDIR /opt/wezva
-COPY target/wezvatech-springboot-mysql-9739110917.jar app.jar
-COPY startup.sh startup.sh
-RUN chown -R wezvatech:wezvatech /opt/wezva
+COPY --chown=wezvatech:wezvatech target/app.jar app.jar
 USER wezvatech
 EXPOSE 8080
-ENTRYPOINT ["./startup.sh"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
